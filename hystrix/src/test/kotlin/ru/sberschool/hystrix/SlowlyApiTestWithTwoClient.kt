@@ -13,14 +13,21 @@ import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
+class SlowlyApiTestWithTwoClient {
 
-class SlowlyApiTest {
-    private val client = HystrixFeign.builder()
+    private val clientMock = HystrixFeign.builder()
         .client(ApacheHttpClient())
         .decoder(JacksonDecoder())
         .options(Request.Options(1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS, true))
         .target(SlowlyApi::class.java, "http://127.0.0.1:18080", FallbackSlowlyApi())
+
+    private val clientPoke = HystrixFeign.builder()
+        .client(ApacheHttpClient())
+        .decoder(JacksonDecoder())
+        .options(Request.Options(1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS, true))
+        .target(SlowlyApi::class.java, "https://pokeapi.co/api/v2/", FallbackSlowlyApi())
 
 
     private lateinit var mockServer: ClientAndServer
@@ -52,25 +59,18 @@ class SlowlyApiTest {
                             "  \"count\": 7\n" +
                             "}")
             )
-        assertEquals("fallback", client.getPokemon().name)
+        assertEquals("fallback", clientMock.getPokemon().name)
     }
 
     @Test
     fun `should return right name`() {
-        MockServerClient("127.0.0.1", 18080)
-            .`when`(
-                HttpRequest.request()
-                    .withMethod("GET")
-                    .withPath("/pokemon/slowpoke")
-            )
-            .respond(
-                HttpResponse.response()
-                    .withStatusCode(200)
-                    .withBody("{\n" +
-                            "  \"name\": \"slowpoke\",\n" +
-                            "  \"count\": 7\n" +
-                            "}")
-            )
-        assertEquals("slowpoke", client.getPokemon().name)
-        }
+        assertEquals("slowpoke", clientPoke.getPokemon().name)
+    }
+
+    @Test
+    fun `should nod return right name`() {
+        assertNotEquals("bulbasaur", clientPoke.getPokemon().name)
+    }
+
+
 }
