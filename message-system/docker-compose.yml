@@ -1,0 +1,12 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+  distributor:
+    container_name: distributor
+    image: shariktlt/sber_kotlin_school_2021_messaging_distributor:1.0.0-SNAPSHOT
+    depends_on:
+      - rabbitmq
