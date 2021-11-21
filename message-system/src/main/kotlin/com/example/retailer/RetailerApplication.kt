@@ -17,29 +17,25 @@ import org.springframework.context.annotation.Bean
 class RetailerApplication {
 
 	@Bean
-	fun topic(): TopicExchange {
-		return TopicExchange("distributor_exchange", true, false)
+	fun exchange(): TopicExchange {
+		return TopicExchange("distributor_exchange")
 	}
 	@Bean
-	fun autoDeleteRetailerQueue(): Queue {
-		return Queue("consumer", false, false, true)
+	fun publisher(): DistributorPublisher {
+		return DistributorPublisherImpl()
 	}
 	@Bean
-	fun bindingRetailer(
-		topic: TopicExchange,
-		autoDeleteRetailerQueue: Queue
-	): Binding {
-		return BindingBuilder.bind(autoDeleteRetailerQueue)
-			.to(topic)
-			.with("retailer.VYushinsky.#")
+	fun queue(): Queue {
+		return Queue("consumer")
 	}
 	@Bean
 	fun consumer(): Consumer {
 		return ConsumerImpl()
 	}
 	@Bean
-	fun publisher(): DistributorPublisher {
-		return DistributorPublisherImpl()
+	fun bindingRetailer(exchange: TopicExchange, queue: Queue
+	): Binding {
+		return BindingBuilder.bind(queue).to(exchange).with("retailer.VYushinsky.#")
 	}
 }
 

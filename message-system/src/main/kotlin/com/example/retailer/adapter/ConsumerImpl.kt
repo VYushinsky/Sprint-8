@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired
 class ConsumerImpl : Consumer {
     @Autowired
     private lateinit var orderService: OrderService
-    private val mapper = jacksonObjectMapper()
 
     @RabbitListener(queues = ["consumer"])
-    override fun receiveUpdate(incomingMsg: String) {
-        val orderInfo = mapper.readValue<OrderInfo>(incomingMsg)
+    override fun receiveUpdate(massage: String) {
+        val mapper = jacksonObjectMapper()
+        val orderInfo = mapper.readValue(massage, OrderInfo::class.java)
         orderService.updateOrderInfo(orderInfo)
     }
 }

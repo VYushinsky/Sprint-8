@@ -8,7 +8,6 @@ import com.example.retailer.api.distributor.OrderInfo
  * Интерфейс для организации хранилища заявок
  */
 interface OrderStorage {
-
     /**
      * Первичное сохранение заявки в БД
      * Нужно вернуть объект с заполненным id

@@ -13,20 +13,17 @@ class DistributorPublisherImpl : DistributorPublisher {
     private lateinit var template: RabbitTemplate
     @Autowired
     private lateinit var topic: TopicExchange
-    private val mapper = jacksonObjectMapper()
 
     override fun placeOrder(order: Order): Boolean {
-        val orderJson = mapper.writeValueAsString(order)
+        val mapper = jacksonObjectMapper()
+        val massage = mapper.writeValueAsString(order)
         return if (order.id != null) {
-            template.convertAndSend(topic.name, "distributor.placeOrder.VYushinsky.${order.id}", orderJson) {
+            template.convertAndSend(topic.name, "distributor.placeOrder.VYushinsky.${order.id}", massage) {
                 it.messageProperties.headers["Notify-Exchange"] = "distributor_exchange"
                 it.messageProperties.headers["Notify-RoutingKey"] = "retailer.VYushinsky"
                 it
             }
             true
-        } else {
-            println("order id == null !")
-            false
-        }
+        } else return false
     }
 }

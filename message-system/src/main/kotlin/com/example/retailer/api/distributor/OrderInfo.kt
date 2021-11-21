@@ -8,7 +8,6 @@ import javax.persistence.*
 
 @Entity
 data class OrderInfo(
-
     /**
      * Уникальный идентификатор заказа
      *
