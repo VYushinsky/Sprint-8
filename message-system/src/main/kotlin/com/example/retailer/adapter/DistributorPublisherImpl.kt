@@ -8,23 +8,25 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-@Component("distributorPublisher")
 class DistributorPublisherImpl : DistributorPublisher {
     @Autowired
     private lateinit var template: RabbitTemplate
     @Autowired
     private lateinit var topic: TopicExchange
+    private val mapper = jacksonObjectMapper()
 
     override fun placeOrder(order: Order): Boolean {
-        val mapper = jacksonObjectMapper()
-        val massage = mapper.writeValueAsString(order)
+        val orderJson = mapper.writeValueAsString(order)
         return if (order.id != null) {
-            template.convertAndSend(topic.name, "distributor.placeOrder.VYushinsky.${order.id}", massage) {
+            template.convertAndSend(topic.name, "distributor.placeOrder.VYushinsky.${order.id}", orderJson) {
                 it.messageProperties.headers["Notify-Exchange"] = "distributor_exchange"
                 it.messageProperties.headers["Notify-RoutingKey"] = "retailer.VYushinsky"
                 it
             }
             true
-        } else false
+        } else {
+            println("order id == null !")
+            false
+        }
     }
 }

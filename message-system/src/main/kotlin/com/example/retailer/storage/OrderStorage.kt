@@ -24,5 +24,4 @@ interface OrderStorage {
      * Получение информации о заявке по id или null если не найдено
      */
     fun getOrderInfo(id: String) : OrderInfo?
-
 }

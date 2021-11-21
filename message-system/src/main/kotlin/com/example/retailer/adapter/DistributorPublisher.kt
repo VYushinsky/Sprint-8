@@ -16,5 +16,6 @@ interface DistributorPublisher {
      * После некоторого времени уведомления будут поступать в distributor_exchange с ключом retail.#github_username#.#orderId#
      */
     fun placeOrder(order: Order) : Boolean
+
 }
 

@@ -8,6 +8,7 @@ import javax.persistence.*
 
 @Entity
 data class OrderInfo(
+
     /**
      * Уникальный идентификатор заказа
      *
@@ -21,11 +22,12 @@ data class OrderInfo(
      *  Created
      *
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Column
     var status: OrderStatus,
 
     /**
      * Контрольная сумма
      */
+    @Column
     val signature: String
-    )
+)

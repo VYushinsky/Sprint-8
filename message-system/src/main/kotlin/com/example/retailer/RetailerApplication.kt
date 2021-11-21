@@ -1,9 +1,10 @@
+
 package com.example.retailer
 
-import com.example.retailer.adapter.Consumer
-import com.example.retailer.adapter.ConsumerImpl
 import com.example.retailer.adapter.DistributorPublisher
 import com.example.retailer.adapter.DistributorPublisherImpl
+import com.example.retailer.adapter.Consumer
+import com.example.retailer.adapter.ConsumerImpl
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.Queue
@@ -16,27 +17,28 @@ import org.springframework.context.annotation.Bean
 class RetailerApplication {
 
 	@Bean
-	fun queue(): Queue {
-		return Queue("consumer")
+	fun topic(): TopicExchange {
+		return TopicExchange("distributor_exchange", true, false)
 	}
-
 	@Bean
-	fun exchange(): TopicExchange {
-		return TopicExchange("distributor_exchange")
+	fun autoDeleteRetailerQueue(): Queue {
+		return Queue("consumer", false, false, true)
 	}
-
 	@Bean
-	fun binding(queue: Queue, exchange: TopicExchange): Binding? {
-		return BindingBuilder.bind(queue).to(exchange).with("retailer.VYushinsky.#")
+	fun bindingRetailer(
+		topic: TopicExchange,
+		autoDeleteRetailerQueue: Queue
+	): Binding {
+		return BindingBuilder.bind(autoDeleteRetailerQueue)
+			.to(topic)
+			.with("retailer.VYushinsky.#")
 	}
-
 	@Bean
-	fun receiver(): Consumer {
+	fun consumer(): Consumer {
 		return ConsumerImpl()
 	}
-
 	@Bean
-	fun sender(): DistributorPublisher {
+	fun publisher(): DistributorPublisher {
 		return DistributorPublisherImpl()
 	}
 }

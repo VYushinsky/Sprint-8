@@ -9,14 +9,16 @@ import org.springframework.stereotype.Component
 
 @Component
 class OrderStorageService : OrderStorage {
+
     @Autowired
     lateinit var orderInfoCrud: OrderInfoCrud
     @Autowired
     lateinit var orderRepositoryCrud: OrderRepositoryCrud
 
+
     override fun createOrder(draftOrder: Order): PlaceOrderData {
         val order = orderRepositoryCrud.save(draftOrder)
-        val info = orderInfoCrud.save(OrderInfo(order.id!!, OrderStatus.SENT, "signature"))
+        val info = orderInfoCrud.save(OrderInfo(order.id!!, OrderStatus.CREATED, ""))
         return PlaceOrderData(order, info)
     }
 
