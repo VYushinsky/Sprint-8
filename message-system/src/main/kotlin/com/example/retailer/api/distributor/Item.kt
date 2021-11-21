@@ -1,20 +1,17 @@
 package com.example.retailer.api.distributor
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 /**
  * Описание товара
  */
+
 @Entity
 data class Item(
     /**
      * Произвольный идентификатор
      */
     @Id
-    @GeneratedValue
     val id: Long,
 
     /**

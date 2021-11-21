@@ -5,16 +5,15 @@ import javax.persistence.*
 /**
  * Уведомление об изменении заказа
  */
+
 @Entity
 data class OrderInfo(
-
     /**
      * Уникальный идентификатор заказа
      *
      * @see com.example.retailer.api.distributor.Item#id
      */
     @Id
-    @GeneratedValue
     val orderId: String,
 
     /**
@@ -22,11 +21,11 @@ data class OrderInfo(
      *  Created
      *
      */
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     var status: OrderStatus,
 
     /**
      * Контрольная сумма
      */
     val signature: String
-)
+    )

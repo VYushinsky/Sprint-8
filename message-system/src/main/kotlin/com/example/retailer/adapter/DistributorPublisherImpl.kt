@@ -16,8 +16,8 @@ class DistributorPublisherImpl : DistributorPublisher {
     private lateinit var topic: TopicExchange
 
     override fun placeOrder(order: Order): Boolean {
-        val objectMapper = jacksonObjectMapper()
-        val massage = objectMapper.writeValueAsString(order)
+        val mapper = jacksonObjectMapper()
+        val massage = mapper.writeValueAsString(order)
         return if (order.id != null) {
             template.convertAndSend(topic.name, "distributor.placeOrder.VYushinsky.${order.id}", massage) {
                 it.messageProperties.headers["Notify-Exchange"] = "distributor_exchange"
@@ -26,6 +26,5 @@ class DistributorPublisherImpl : DistributorPublisher {
             }
             true
         } else false
-
     }
 }
